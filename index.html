@@ -7,7 +7,6 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Geist:wght@400;500;600&display=swap">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23dc2644'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E">
 <style>
-  /* Pure white canvas, confident blue type accent, warm red for hearts. */
   :root {
     --bg: #ffffff;
     --surface: #ffffff;
@@ -20,8 +19,10 @@
     --blue-soft: #ecf0ff;
     --red: #dc2644;
     --red-soft: #fff0f2;
+    --amber: #b45309;
     --radius: 10px;
     --radius-sm: 6px;
+    --radius-chip: 999px;
     color-scheme: light;
   }
 
@@ -52,11 +53,7 @@
     padding: 20px 0 36px;
     text-align: center;
   }
-  .hearts {
-    display: inline-flex;
-    gap: 7px;
-    align-items: center;
-  }
+  .hearts { display: inline-flex; gap: 7px; align-items: center; }
   .hearts svg { width: 13px; height: 13px; display: block; }
   .hearts .h-red { color: var(--red); }
   .hearts .h-blue { color: var(--blue); }
@@ -70,11 +67,7 @@
     margin: 0;
     font-variation-settings: 'opsz' 72;
   }
-  .title em {
-    font-style: italic;
-    color: var(--blue);
-    font-weight: 400;
-  }
+  .title em { font-style: italic; color: var(--blue); font-weight: 400; }
   .subtitle {
     color: var(--ink-soft);
     font-size: 13px;
@@ -107,9 +100,11 @@
   .status-bar.online .dot { background: #16a34a; }
   .status-bar.offline .dot { background: var(--red); }
 
+  /* Add form */
   .add-form {
     display: flex;
-    gap: 6px;
+    flex-direction: column;
+    gap: 8px;
     padding: 6px;
     background: var(--surface);
     border: 1px solid var(--line);
@@ -122,7 +117,8 @@
     border-color: var(--blue);
     box-shadow: 0 0 0 3px var(--blue-soft);
   }
-  .add-form input {
+  .add-row { display: flex; gap: 6px; }
+  .add-row input {
     flex: 1;
     min-width: 0;
     border: none;
@@ -132,7 +128,7 @@
     padding: 10px 10px;
     outline: none;
   }
-  .add-form input::placeholder { color: var(--ink-faint); }
+  .add-row input::placeholder { color: var(--ink-faint); }
   .add-btn {
     appearance: none;
     border: none;
@@ -149,6 +145,105 @@
   .add-btn:hover { opacity: 0.9; }
   .add-btn:disabled { background: var(--ink-faint); cursor: not-allowed; }
 
+  .add-opts {
+    display: flex;
+    gap: 6px;
+    padding: 0 4px 4px;
+    flex-wrap: wrap;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-chip);
+    background: transparent;
+    color: var(--ink-soft);
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    position: relative;
+    transition: border-color .15s, color .15s, background .15s;
+    user-select: none;
+  }
+  .chip:hover { border-color: var(--line-strong); color: var(--ink); }
+  .chip.active { color: var(--ink); border-color: var(--line-strong); background: #fafbff; }
+  .chip svg { width: 12px; height: 12px; display: block; }
+  .chip-text { line-height: 1; }
+
+  .chip-date { padding-right: 6px; }
+  .chip-date input[type="date"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+  }
+  .chip-date input[type="date"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    opacity: 0;
+    color: transparent;
+  }
+  .chip-x {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: var(--ink-faint);
+    cursor: pointer;
+    padding: 0;
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 14px;
+    line-height: 1;
+    position: relative;
+    z-index: 2;
+    transition: background .15s, color .15s;
+  }
+  .chip-x:hover { background: var(--red-soft); color: var(--red); }
+
+  .chip-prio { padding-right: 8px; }
+  .chip-prio select {
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    border: none;
+    font: inherit;
+    font-size: 12px;
+    color: inherit;
+    cursor: pointer;
+    padding: 0 14px 0 0;
+    margin: 0;
+    outline: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235a6478' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: 10px;
+  }
+  .prio-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+    background: var(--ink-faint);
+    flex-shrink: 0;
+  }
+  .prio-dot[data-level="alta"] { background: var(--red); }
+  .prio-dot[data-level="normal"] { background: var(--blue); }
+  .prio-dot[data-level="baja"] { background: var(--ink-faint); }
+
+  /* Section labels */
   .section-label {
     display: flex;
     align-items: center;
@@ -163,8 +258,10 @@
   .section-label .line { flex: 1; height: 1px; background: var(--line); }
   .section-label .count { color: var(--ink-faint); font-variant-numeric: tabular-nums; }
 
+  /* Reminder cards */
   .reminders { display: flex; flex-direction: column; gap: 6px; }
   .reminder {
+    position: relative;
     display: flex;
     align-items: flex-start;
     gap: 12px;
@@ -174,14 +271,13 @@
     border-radius: var(--radius);
     transition: border-color .15s, background .15s;
     animation: slide-in .22s ease-out;
+    overflow: hidden;
   }
   @keyframes slide-in {
     from { opacity: 0; transform: translateY(-3px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  @media (prefers-reduced-motion: reduce) {
-    .reminder { animation: none; }
-  }
+  @media (prefers-reduced-motion: reduce) { .reminder { animation: none; } }
   .reminder:hover { border-color: var(--line-strong); }
   .reminder.done {
     background: transparent;
@@ -194,6 +290,18 @@
     color: var(--ink-faint);
   }
   .reminder.pending-write { opacity: 0.7; }
+
+  /* Left stripe for priority */
+  .reminder.prio-alta::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--red);
+  }
+  .reminder.prio-baja .text { color: var(--ink-soft); }
 
   .check {
     appearance: none;
@@ -225,10 +333,7 @@
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
   }
-  .check:focus-visible {
-    outline: 2px solid var(--blue);
-    outline-offset: 2px;
-  }
+  .check:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 
   .reminder-body {
     flex: 1;
@@ -247,12 +352,23 @@
     color: var(--ink-faint);
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 10px;
     font-variant-numeric: tabular-nums;
     flex-wrap: wrap;
   }
+  .meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
   .meta .heart-mini { color: var(--red); opacity: 0.65; }
   .meta .heart-mini svg { width: 10px; height: 10px; display: block; }
+  .meta .cal-icon svg { width: 10px; height: 10px; display: block; }
+  .meta-date.overdue, .meta-date.today { color: var(--red); font-weight: 500; }
+  .meta-date.soon { color: var(--amber); }
+  .meta-prio { display: inline-flex; align-items: center; gap: 4px; }
+  .meta-prio.alta { color: var(--red); font-weight: 500; }
+  .meta-prio .prio-dot { width: 6px; height: 6px; }
 
   .delete-btn {
     opacity: 0;
@@ -271,22 +387,11 @@
     margin-top: -2px;
   }
   .reminder:hover .delete-btn,
-  .reminder:focus-within .delete-btn {
-    opacity: 1;
-  }
-  .delete-btn:hover {
-    color: var(--red);
-    background: var(--red-soft);
-  }
-  .delete-btn:focus-visible {
-    opacity: 1;
-    outline: 2px solid var(--blue);
-    outline-offset: 1px;
-  }
+  .reminder:focus-within .delete-btn { opacity: 1; }
+  .delete-btn:hover { color: var(--red); background: var(--red-soft); }
+  .delete-btn:focus-visible { opacity: 1; outline: 2px solid var(--blue); outline-offset: 1px; }
   .delete-btn svg { width: 14px; height: 14px; display: block; }
-  @media (hover: none) {
-    .delete-btn { opacity: 0.55; }
-  }
+  @media (hover: none) { .delete-btn { opacity: 0.55; } }
 
   .empty {
     text-align: center;
@@ -367,8 +472,26 @@
   </div>
 
   <form class="add-form disabled" id="add-form">
-    <input type="text" id="add-input" placeholder="Escribe algo para los dos…" autocomplete="off" maxlength="280" aria-label="Nuevo recordatorio" />
-    <button type="submit" class="add-btn" id="add-btn" disabled>Agregar</button>
+    <div class="add-row">
+      <input type="text" id="add-input" placeholder="Escribe algo para los dos…" autocomplete="off" maxlength="280" aria-label="Nuevo recordatorio" />
+      <button type="submit" class="add-btn" id="add-btn" disabled>Agregar</button>
+    </div>
+    <div class="add-opts">
+      <div class="chip chip-date" id="date-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span class="chip-text" id="date-text">sin fecha</span>
+        <button type="button" class="chip-x" id="date-clear" aria-label="Quitar fecha" hidden>×</button>
+        <input type="date" id="date-input" aria-label="Fecha" />
+      </div>
+      <label class="chip chip-prio" for="prio-select">
+        <span class="prio-dot" data-level="normal" id="prio-dot"></span>
+        <select id="prio-select" aria-label="Prioridad">
+          <option value="baja">baja</option>
+          <option value="normal" selected>normal</option>
+          <option value="alta">alta</option>
+        </select>
+      </label>
+    </div>
   </form>
 
   <div id="content" aria-live="polite">
@@ -393,7 +516,6 @@ import {
   updateDoc,
   deleteDoc,
   onSnapshot,
-  orderBy,
   query
 } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 
@@ -418,6 +540,12 @@ const addBtn = document.getElementById('add-btn');
 const subtitle = document.getElementById('subtitle');
 const statusBar = document.getElementById('status-bar');
 const statusText = document.getElementById('status-text');
+const dateChip = document.getElementById('date-chip');
+const dateInput = document.getElementById('date-input');
+const dateText = document.getElementById('date-text');
+const dateClear = document.getElementById('date-clear');
+const prioSelect = document.getElementById('prio-select');
+const prioDot = document.getElementById('prio-dot');
 
 try {
   const d = new Date();
@@ -427,14 +555,87 @@ try {
 
 const HEART_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
 const TRASH_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>';
+const CAL_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
 
 let reminders = [];
+
+/* ---------- Form controls: date & priority ---------- */
+
+function updateDateChip() {
+  if (dateInput.value) {
+    try {
+      const d = parseISODate(dateInput.value);
+      const fmt = new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'short' });
+      dateText.textContent = fmt.format(d);
+    } catch { dateText.textContent = dateInput.value; }
+    dateChip.classList.add('active');
+    dateClear.hidden = false;
+  } else {
+    dateText.textContent = 'sin fecha';
+    dateChip.classList.remove('active');
+    dateClear.hidden = true;
+  }
+}
+dateInput.addEventListener('change', updateDateChip);
+dateClear.addEventListener('click', e => {
+  e.stopPropagation();
+  dateInput.value = '';
+  updateDateChip();
+});
+
+prioSelect.addEventListener('change', () => {
+  prioDot.setAttribute('data-level', prioSelect.value);
+});
+
+/* ---------- Utilities ---------- */
 
 function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-function formatTime(ms) {
+function parseISODate(iso) {
+  // "YYYY-MM-DD" → local date at midnight (avoids UTC shift)
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
+function startOfToday() {
+  const n = new Date();
+  return new Date(n.getFullYear(), n.getMonth(), n.getDate());
+}
+
+function daysBetween(a, b) {
+  return Math.round((b - a) / 86400000);
+}
+
+function formatDueDate(iso) {
+  if (!iso) return null;
+  const d = parseISODate(iso);
+  if (isNaN(d.getTime())) return null;
+  const today = startOfToday();
+  const diff = daysBetween(today, d);
+  let text, cls = '';
+  if (diff < 0) {
+    const n = Math.abs(diff);
+    text = n === 1 ? 'vencía ayer' : `vencía hace ${n} d`;
+    cls = 'overdue';
+  } else if (diff === 0) {
+    text = 'hoy'; cls = 'today';
+  } else if (diff === 1) {
+    text = 'mañana'; cls = 'soon';
+  } else if (diff < 7) {
+    text = `en ${diff} d`; cls = 'soon';
+  } else {
+    const sameYear = d.getFullYear() === today.getFullYear();
+    const opts = sameYear
+      ? { day: 'numeric', month: 'short' }
+      : { day: 'numeric', month: 'short', year: 'numeric' };
+    text = new Intl.DateTimeFormat('es-MX', opts).format(d);
+  }
+  return { text, cls };
+}
+
+function formatCreated(ms) {
   if (!ms) return '';
   const d = new Date(ms);
   if (isNaN(d.getTime())) return '';
@@ -448,6 +649,10 @@ function formatTime(ms) {
   const diffDays = Math.round((now - d) / 86400000);
   if (diffDays < 7) return `hace ${diffDays} d`;
   return d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' });
+}
+
+function priorityScore(p) {
+  return p === 'alta' ? 0 : p === 'baja' ? 2 : 1;
 }
 
 function setStatus(mode, text) {
@@ -466,6 +671,8 @@ function enableForm(enabled) {
   }
 }
 
+/* ---------- Render ---------- */
+
 function render() {
   if (reminders.length === 0) {
     content.innerHTML = `
@@ -480,7 +687,16 @@ function render() {
 
   const pending = reminders.filter(r => !r.completed);
   const done = reminders.filter(r => r.completed);
-  pending.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+
+  pending.sort((a, b) => {
+    const pa = priorityScore(a.priority);
+    const pb = priorityScore(b.priority);
+    if (pa !== pb) return pa - pb;
+    const da = a.dueDate ? parseISODate(a.dueDate).getTime() : Infinity;
+    const db = b.dueDate ? parseISODate(b.dueDate).getTime() : Infinity;
+    if (da !== db) return da - db;
+    return (a.createdAt || 0) - (b.createdAt || 0);
+  });
   done.sort((a, b) => (b.completedAt || 0) - (a.completedAt || 0));
 
   const sections = [];
@@ -510,17 +726,54 @@ function renderSection(label, items) {
 }
 
 function renderReminder(r) {
-  const timeStr = formatTime(r.createdAt);
+  const prio = r.priority || 'normal';
+  const prioClass = `prio-${prio}`;
   const pendingClass = r.pending ? ' pending-write' : '';
+  const dueInfo = r.completed ? null : formatDueDate(r.dueDate);
+  const createdStr = formatCreated(r.createdAt);
+
+  const metaParts = [];
+
+  if (dueInfo) {
+    metaParts.push(`
+      <span class="meta-item meta-date ${dueInfo.cls}">
+        <span class="cal-icon" aria-hidden="true">${CAL_SVG}</span>
+        ${esc(dueInfo.text)}
+      </span>
+    `);
+  }
+
+  if (prio === 'alta' && !r.completed) {
+    metaParts.push(`
+      <span class="meta-item meta-prio alta">
+        <span class="prio-dot" data-level="alta"></span>
+        alta
+      </span>
+    `);
+  } else if (prio === 'baja' && !r.completed) {
+    metaParts.push(`
+      <span class="meta-item meta-prio baja">
+        <span class="prio-dot" data-level="baja"></span>
+        baja
+      </span>
+    `);
+  }
+
+  if (createdStr) {
+    metaParts.push(`
+      <span class="meta-item">
+        <span class="heart-mini" aria-hidden="true">${HEART_SVG}</span>
+        ${esc(createdStr)}
+      </span>
+    `);
+  }
+
   return `
-    <div class="reminder ${r.completed ? 'done' : ''}${pendingClass}">
+    <div class="reminder ${r.completed ? 'done' : prioClass}${pendingClass}">
       <input type="checkbox" class="check" data-id="${esc(r.id)}" ${r.completed ? 'checked' : ''} aria-label="Marcar como hecho" />
       <div class="reminder-body">
         <div class="text">${esc(r.text)}</div>
-        <div class="meta">
-          <span class="heart-mini" aria-hidden="true">${HEART_SVG}</span>
-          ${timeStr ? `<span>${esc(timeStr)}</span>` : ''}
-        </div>
+        <div class="meta">${metaParts.join('')}</div>
       </div>
       <button class="delete-btn" data-id="${esc(r.id)}" aria-label="Borrar recordatorio" title="Borrar">${TRASH_SVG}</button>
     </div>
@@ -536,15 +789,26 @@ function showError(title, details) {
   `;
 }
 
+/* ---------- Data writes ---------- */
+
 async function addReminder(text) {
+  const dueDate = dateInput.value || null;
+  const priority = prioSelect.value || 'normal';
   try {
     await addDoc(collection(db, 'reminders'), {
       text,
       createdAt: Date.now(),
       completed: false,
       completedAt: null,
-      createdBy: auth.currentUser ? auth.currentUser.uid : null
+      createdBy: auth.currentUser ? auth.currentUser.uid : null,
+      dueDate,
+      priority
     });
+    // Reset form options after a successful add
+    dateInput.value = '';
+    updateDateChip();
+    prioSelect.value = 'normal';
+    prioDot.setAttribute('data-level', 'normal');
   } catch (e) {
     console.error('add failed', e);
     input.value = text;
@@ -570,6 +834,8 @@ async function deleteReminder(id) {
   }
 }
 
+/* ---------- Form submit ---------- */
+
 form.addEventListener('submit', e => {
   e.preventDefault();
   const text = input.value.trim();
@@ -579,17 +845,17 @@ form.addEventListener('submit', e => {
   addReminder(text);
 });
 
-// Online/offline UI
+/* ---------- Connectivity ---------- */
+
 window.addEventListener('online', () => {
-  if (statusBar.classList.contains('online') || statusBar.classList.contains('offline')) {
-    setStatus('online', 'en línea');
-  }
+  if (auth.currentUser) setStatus('online', 'en línea');
 });
 window.addEventListener('offline', () => {
   setStatus('offline', 'sin conexión');
 });
 
-// Sign in anonymously, then subscribe
+/* ---------- Auth & subscription ---------- */
+
 try {
   await signInAnonymously(auth);
 } catch (e) {
@@ -599,6 +865,11 @@ try {
     showError(
       'Falta habilitar el inicio de sesión anónimo.',
       'En Firebase Console → <strong>Authentication → Sign-in method → Anonymous</strong> → activa y guarda. Después recarga esta página.'
+    );
+  } else if (e.code === 'auth/unauthorized-domain') {
+    showError(
+      'Este dominio no está autorizado en Firebase.',
+      'Ve a Firebase Console → <strong>Authentication → Settings → Authorized domains</strong> y agrega el dominio donde estás abriendo esta página.'
     );
   } else {
     showError('No pudimos conectar con Firebase.', `Código: <code>${esc(e.code || 'desconocido')}</code>`);
@@ -610,7 +881,7 @@ onAuthStateChanged(auth, user => {
   setStatus('online', 'en línea');
   enableForm(true);
 
-  const q = query(collection(db, 'reminders'), orderBy('createdAt', 'asc'));
+  const q = query(collection(db, 'reminders'));
   onSnapshot(q, snap => {
     reminders = snap.docs.map(d => ({
       id: d.id,
