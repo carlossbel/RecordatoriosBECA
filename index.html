@@ -10,6 +10,7 @@
   :root {
     --bg: #ffffff;
     --surface: #ffffff;
+    --surface-soft: #fafbfd;
     --ink: #16213e;
     --ink-soft: #5a6478;
     --ink-faint: #a8aebb;
@@ -100,12 +101,12 @@
   .status-bar.online .dot { background: #16a34a; }
   .status-bar.offline .dot { background: var(--red); }
 
-  /* Add form */
+  /* ---------- Add form ---------- */
   .add-form {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 6px;
+    gap: 0;
+    padding: 8px;
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: var(--radius);
@@ -145,34 +146,49 @@
   .add-btn:hover { opacity: 0.9; }
   .add-btn:disabled { background: var(--ink-faint); cursor: not-allowed; }
 
-  .add-opts {
-    display: flex;
+  .opts-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 6px;
-    padding: 0 4px 4px;
-    flex-wrap: wrap;
+    margin-top: 8px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
   }
+  @media (min-width: 520px) {
+    .opts-box { grid-template-columns: repeat(4, 1fr); }
+  }
+
   .chip {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 5px 10px;
+    padding: 7px 11px;
     border: 1px solid var(--line);
     border-radius: var(--radius-chip);
     background: transparent;
     color: var(--ink-soft);
     font: inherit;
-    font-size: 12px;
+    font-size: 12.5px;
     cursor: pointer;
     position: relative;
     transition: border-color .15s, color .15s, background .15s;
     user-select: none;
+    min-width: 0;
+    justify-content: flex-start;
   }
-  .chip:hover { border-color: var(--line-strong); color: var(--ink); }
-  .chip.active { color: var(--ink); border-color: var(--line-strong); background: #fafbff; }
-  .chip svg { width: 12px; height: 12px; display: block; }
-  .chip-text { line-height: 1; }
+  .chip:hover { border-color: var(--line-strong); color: var(--ink); background: var(--surface-soft); }
+  .chip.active { color: var(--ink); border-color: var(--line-strong); background: var(--surface-soft); }
+  .chip > svg { width: 13px; height: 13px; display: block; flex-shrink: 0; }
+  .chip-text { line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chip-pre {
+    color: var(--ink-faint);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+  }
 
-  .chip-date { padding-right: 6px; }
+  .chip-date { padding-right: 8px; }
   .chip-date input[type="date"] {
     position: absolute;
     inset: 0;
@@ -182,6 +198,7 @@
     cursor: pointer;
     border: none;
     padding: 0;
+    z-index: 1;
   }
   .chip-date input[type="date"]::-webkit-calendar-picker-indicator {
     position: absolute;
@@ -210,17 +227,20 @@
     position: relative;
     z-index: 2;
     transition: background .15s, color .15s;
+    margin-left: auto;
   }
   .chip-x:hover { background: var(--red-soft); color: var(--red); }
 
-  .chip-prio { padding-right: 8px; }
-  .chip-prio select {
+  .chip-select {
+    padding-right: 8px;
+  }
+  .chip-select select {
     appearance: none;
     -webkit-appearance: none;
     background: transparent;
     border: none;
     font: inherit;
-    font-size: 12px;
+    font-size: 12.5px;
     color: inherit;
     cursor: pointer;
     padding: 0 14px 0 0;
@@ -230,6 +250,7 @@
     background-repeat: no-repeat;
     background-position: right center;
     background-size: 10px;
+    text-transform: capitalize;
   }
   .prio-dot {
     width: 7px;
@@ -243,7 +264,7 @@
   .prio-dot[data-level="normal"] { background: var(--blue); }
   .prio-dot[data-level="baja"] { background: var(--ink-faint); }
 
-  /* Section labels */
+  /* ---------- Section labels ---------- */
   .section-label {
     display: flex;
     align-items: center;
@@ -258,7 +279,7 @@
   .section-label .line { flex: 1; height: 1px; background: var(--line); }
   .section-label .count { color: var(--ink-faint); font-variant-numeric: tabular-nums; }
 
-  /* Reminder cards */
+  /* ---------- Reminder cards ---------- */
   .reminders { display: flex; flex-direction: column; gap: 6px; }
   .reminder {
     position: relative;
@@ -279,10 +300,7 @@
   }
   @media (prefers-reduced-motion: reduce) { .reminder { animation: none; } }
   .reminder:hover { border-color: var(--line-strong); }
-  .reminder.done {
-    background: transparent;
-    border-color: transparent;
-  }
+  .reminder.done { background: transparent; border-color: transparent; }
   .reminder.done .text {
     text-decoration: line-through;
     text-decoration-color: var(--ink-faint);
@@ -291,7 +309,6 @@
   }
   .reminder.pending-write { opacity: 0.7; }
 
-  /* Left stripe for priority */
   .reminder.prio-alta::before {
     content: '';
     position: absolute;
@@ -318,10 +335,7 @@
     background: transparent;
   }
   .check:hover { border-color: var(--blue); }
-  .check:checked {
-    background: var(--blue);
-    border-color: var(--blue);
-  }
+  .check:checked { background: var(--blue); border-color: var(--blue); }
   .check:checked::after {
     content: '';
     position: absolute;
@@ -342,11 +356,7 @@
     flex-direction: column;
     gap: 4px;
   }
-  .text {
-    color: var(--ink);
-    overflow-wrap: break-word;
-    word-break: break-word;
-  }
+  .text { color: var(--ink); overflow-wrap: break-word; word-break: break-word; }
   .meta {
     font-size: 12px;
     color: var(--ink-faint);
@@ -356,21 +366,31 @@
     font-variant-numeric: tabular-nums;
     flex-wrap: wrap;
   }
-  .meta-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-  }
+  .meta-item { display: inline-flex; align-items: center; gap: 4px; }
   .meta .heart-mini { color: var(--red); opacity: 0.65; }
   .meta .heart-mini svg { width: 10px; height: 10px; display: block; }
   .meta .cal-icon svg { width: 10px; height: 10px; display: block; }
   .meta-date.overdue, .meta-date.today { color: var(--red); font-weight: 500; }
   .meta-date.soon { color: var(--amber); }
-  .meta-prio { display: inline-flex; align-items: center; gap: 4px; }
   .meta-prio.alta { color: var(--red); font-weight: 500; }
   .meta-prio .prio-dot { width: 6px; height: 6px; }
+  .meta-who {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--ink-soft);
+  }
+  .meta-who .arrow { color: var(--ink-faint); font-size: 10px; }
+  .meta-who strong { font-weight: 500; color: var(--blue); }
+  .meta-who .me { color: var(--red); }
 
-  .delete-btn {
+  .card-actions {
+    display: flex;
+    gap: 2px;
+    flex-shrink: 0;
+    margin-top: -2px;
+  }
+  .icon-btn {
     opacity: 0;
     appearance: none;
     border: none;
@@ -383,16 +403,67 @@
     align-items: center;
     justify-content: center;
     transition: all .15s;
-    flex-shrink: 0;
-    margin-top: -2px;
   }
-  .reminder:hover .delete-btn,
-  .reminder:focus-within .delete-btn { opacity: 1; }
-  .delete-btn:hover { color: var(--red); background: var(--red-soft); }
-  .delete-btn:focus-visible { opacity: 1; outline: 2px solid var(--blue); outline-offset: 1px; }
-  .delete-btn svg { width: 14px; height: 14px; display: block; }
-  @media (hover: none) { .delete-btn { opacity: 0.55; } }
+  .reminder:hover .icon-btn,
+  .reminder:focus-within .icon-btn { opacity: 1; }
+  .icon-btn:hover { color: var(--blue); background: var(--blue-soft); }
+  .icon-btn.delete:hover { color: var(--red); background: var(--red-soft); }
+  .icon-btn:focus-visible { opacity: 1; outline: 2px solid var(--blue); outline-offset: 1px; }
+  .icon-btn svg { width: 14px; height: 14px; display: block; }
+  @media (hover: none) { .icon-btn { opacity: 0.55; } }
 
+  /* ---------- Edit mode card ---------- */
+  .reminder.editing {
+    background: var(--surface-soft);
+    border-color: var(--blue);
+    padding: 10px;
+    flex-direction: column;
+    gap: 0;
+    animation: none;
+  }
+  .edit-input {
+    width: 100%;
+    border: 1px solid var(--line-strong);
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .edit-input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px var(--blue-soft);
+  }
+  .edit-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
+  .btn-ghost, .btn-primary {
+    appearance: none;
+    border: 1px solid var(--line-strong);
+    background: transparent;
+    color: var(--ink-soft);
+    font: inherit;
+    font-size: 13px;
+    padding: 8px 14px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all .15s;
+    font-weight: 500;
+  }
+  .btn-ghost:hover { background: var(--surface-soft); color: var(--ink); }
+  .btn-primary {
+    background: var(--blue);
+    color: #fff;
+    border-color: var(--blue);
+  }
+  .btn-primary:hover { opacity: 0.9; }
+
+  /* ---------- Empty / loading / error ---------- */
   .empty {
     text-align: center;
     padding: 56px 20px 32px;
@@ -476,19 +547,33 @@
       <input type="text" id="add-input" placeholder="Escribe algo para los dos…" autocomplete="off" maxlength="280" aria-label="Nuevo recordatorio" />
       <button type="submit" class="add-btn" id="add-btn" disabled>Agregar</button>
     </div>
-    <div class="add-opts">
+    <div class="opts-box">
       <div class="chip chip-date" id="date-chip">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         <span class="chip-text" id="date-text">sin fecha</span>
         <button type="button" class="chip-x" id="date-clear" aria-label="Quitar fecha" hidden>×</button>
         <input type="date" id="date-input" aria-label="Fecha" />
       </div>
-      <label class="chip chip-prio" for="prio-select">
+      <label class="chip chip-select" for="prio-select">
         <span class="prio-dot" data-level="normal" id="prio-dot"></span>
         <select id="prio-select" aria-label="Prioridad">
           <option value="baja">baja</option>
           <option value="normal" selected>normal</option>
           <option value="alta">alta</option>
+        </select>
+      </label>
+      <label class="chip chip-select" for="from-select">
+        <span class="chip-pre">de</span>
+        <select id="from-select" aria-label="De quién">
+          <option value="carlos">Carlos</option>
+          <option value="miguel">Miguel</option>
+        </select>
+      </label>
+      <label class="chip chip-select" for="to-select">
+        <span class="chip-pre">para</span>
+        <select id="to-select" aria-label="Para quién">
+          <option value="carlos">Carlos</option>
+          <option value="miguel">Miguel</option>
         </select>
       </label>
     </div>
@@ -509,14 +594,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
 import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
 import {
-  getFirestore,
-  collection,
-  addDoc,
-  doc,
-  updateDoc,
-  deleteDoc,
-  onSnapshot,
-  query
+  getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, query
 } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -533,6 +611,15 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+const PEOPLE = { carlos: 'Carlos', miguel: 'Miguel' };
+const LS_FROM = 'rec-last-from';
+const LS_TO = 'rec-last-to';
+
+function lsGet(k, fallback) {
+  try { return localStorage.getItem(k) || fallback; } catch { return fallback; }
+}
+function lsSet(k, v) { try { localStorage.setItem(k, v); } catch {} }
+
 const content = document.getElementById('content');
 const form = document.getElementById('add-form');
 const input = document.getElementById('add-input');
@@ -546,6 +633,12 @@ const dateText = document.getElementById('date-text');
 const dateClear = document.getElementById('date-clear');
 const prioSelect = document.getElementById('prio-select');
 const prioDot = document.getElementById('prio-dot');
+const fromSelect = document.getElementById('from-select');
+const toSelect = document.getElementById('to-select');
+
+// Load last-used from/to for the main form
+fromSelect.value = lsGet(LS_FROM, 'carlos');
+toSelect.value = lsGet(LS_TO, 'miguel');
 
 try {
   const d = new Date();
@@ -554,19 +647,20 @@ try {
 } catch (e) {}
 
 const HEART_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
-const TRASH_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>';
+const TRASH_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 0 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>';
+const EDIT_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
 const CAL_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
 
 let reminders = [];
+let editingId = null;
 
-/* ---------- Form controls: date & priority ---------- */
+/* ---------- Chip helpers (main form) ---------- */
 
 function updateDateChip() {
   if (dateInput.value) {
     try {
       const d = parseISODate(dateInput.value);
-      const fmt = new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'short' });
-      dateText.textContent = fmt.format(d);
+      dateText.textContent = new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'short' }).format(d);
     } catch { dateText.textContent = dateInput.value; }
     dateChip.classList.add('active');
     dateClear.hidden = false;
@@ -582,7 +676,6 @@ dateClear.addEventListener('click', e => {
   dateInput.value = '';
   updateDateChip();
 });
-
 prioSelect.addEventListener('change', () => {
   prioDot.setAttribute('data-level', prioSelect.value);
 });
@@ -592,41 +685,31 @@ prioSelect.addEventListener('change', () => {
 function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-
 function parseISODate(iso) {
-  // "YYYY-MM-DD" → local date at midnight (avoids UTC shift)
   const [y, m, d] = iso.split('-').map(Number);
   return new Date(y, m - 1, d);
 }
-
 function startOfToday() {
   const n = new Date();
   return new Date(n.getFullYear(), n.getMonth(), n.getDate());
 }
-
-function daysBetween(a, b) {
-  return Math.round((b - a) / 86400000);
-}
+function daysBetween(a, b) { return Math.round((b - a) / 86400000); }
 
 function formatDueDate(iso) {
   if (!iso) return null;
   const d = parseISODate(iso);
   if (isNaN(d.getTime())) return null;
-  const today = startOfToday();
-  const diff = daysBetween(today, d);
+  const diff = daysBetween(startOfToday(), d);
   let text, cls = '';
   if (diff < 0) {
     const n = Math.abs(diff);
     text = n === 1 ? 'vencía ayer' : `vencía hace ${n} d`;
     cls = 'overdue';
-  } else if (diff === 0) {
-    text = 'hoy'; cls = 'today';
-  } else if (diff === 1) {
-    text = 'mañana'; cls = 'soon';
-  } else if (diff < 7) {
-    text = `en ${diff} d`; cls = 'soon';
-  } else {
-    const sameYear = d.getFullYear() === today.getFullYear();
+  } else if (diff === 0) { text = 'hoy'; cls = 'today'; }
+  else if (diff === 1) { text = 'mañana'; cls = 'soon'; }
+  else if (diff < 7) { text = `en ${diff} d`; cls = 'soon'; }
+  else {
+    const sameYear = d.getFullYear() === new Date().getFullYear();
     const opts = sameYear
       ? { day: 'numeric', month: 'short' }
       : { day: 'numeric', month: 'short', year: 'numeric' };
@@ -651,24 +734,16 @@ function formatCreated(ms) {
   return d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' });
 }
 
-function priorityScore(p) {
-  return p === 'alta' ? 0 : p === 'baja' ? 2 : 1;
-}
+function priorityScore(p) { return p === 'alta' ? 0 : p === 'baja' ? 2 : 1; }
 
 function setStatus(mode, text) {
   statusBar.classList.remove('online', 'offline');
   if (mode) statusBar.classList.add(mode);
   statusText.textContent = text;
 }
-
 function enableForm(enabled) {
-  if (enabled) {
-    form.classList.remove('disabled');
-    addBtn.disabled = false;
-  } else {
-    form.classList.add('disabled');
-    addBtn.disabled = true;
-  }
+  if (enabled) { form.classList.remove('disabled'); addBtn.disabled = false; }
+  else { form.classList.add('disabled'); addBtn.disabled = true; }
 }
 
 /* ---------- Render ---------- */
@@ -704,12 +779,22 @@ function render() {
   if (done.length > 0) sections.push(renderSection('Hechos', done));
   content.innerHTML = sections.join('');
 
+  // Wire up card interactions
   content.querySelectorAll('.check').forEach(el => {
     el.addEventListener('change', () => toggleDone(el.dataset.id, el.checked));
   });
-  content.querySelectorAll('.delete-btn').forEach(el => {
+  content.querySelectorAll('.icon-btn.delete').forEach(el => {
     el.addEventListener('click', () => deleteReminder(el.dataset.id));
   });
+  content.querySelectorAll('.icon-btn.edit').forEach(el => {
+    el.addEventListener('click', () => startEdit(el.dataset.id));
+  });
+
+  // Wire up edit-mode interactions
+  if (editingId) {
+    const card = content.querySelector(`.reminder.editing[data-id="${editingId}"]`);
+    if (card) wireEditCard(card);
+  }
 }
 
 function renderSection(label, items) {
@@ -726,11 +811,15 @@ function renderSection(label, items) {
 }
 
 function renderReminder(r) {
+  if (r.id === editingId) return renderEditCard(r);
+
   const prio = r.priority || 'normal';
   const prioClass = `prio-${prio}`;
   const pendingClass = r.pending ? ' pending-write' : '';
   const dueInfo = r.completed ? null : formatDueDate(r.dueDate);
   const createdStr = formatCreated(r.createdAt);
+  const from = r.from && PEOPLE[r.from] ? r.from : null;
+  const to = r.to && PEOPLE[r.to] ? r.to : null;
 
   const metaParts = [];
 
@@ -744,19 +833,23 @@ function renderReminder(r) {
   }
 
   if (prio === 'alta' && !r.completed) {
-    metaParts.push(`
-      <span class="meta-item meta-prio alta">
-        <span class="prio-dot" data-level="alta"></span>
-        alta
-      </span>
-    `);
+    metaParts.push(`<span class="meta-item meta-prio alta"><span class="prio-dot" data-level="alta"></span>alta</span>`);
   } else if (prio === 'baja' && !r.completed) {
-    metaParts.push(`
-      <span class="meta-item meta-prio baja">
-        <span class="prio-dot" data-level="baja"></span>
-        baja
-      </span>
-    `);
+    metaParts.push(`<span class="meta-item meta-prio baja"><span class="prio-dot" data-level="baja"></span>baja</span>`);
+  }
+
+  if (from && to) {
+    if (from === to) {
+      metaParts.push(`<span class="meta-who">${esc(PEOPLE[from])}</span>`);
+    } else {
+      metaParts.push(`
+        <span class="meta-who">
+          <strong>${esc(PEOPLE[from])}</strong>
+          <span class="arrow">→</span>
+          <strong>${esc(PEOPLE[to])}</strong>
+        </span>
+      `);
+    }
   }
 
   if (createdStr) {
@@ -775,9 +868,131 @@ function renderReminder(r) {
         <div class="text">${esc(r.text)}</div>
         <div class="meta">${metaParts.join('')}</div>
       </div>
-      <button class="delete-btn" data-id="${esc(r.id)}" aria-label="Borrar recordatorio" title="Borrar">${TRASH_SVG}</button>
+      <div class="card-actions">
+        <button class="icon-btn edit" data-id="${esc(r.id)}" aria-label="Editar recordatorio" title="Editar">${EDIT_SVG}</button>
+        <button class="icon-btn delete" data-id="${esc(r.id)}" aria-label="Borrar recordatorio" title="Borrar">${TRASH_SVG}</button>
+      </div>
     </div>
   `;
+}
+
+function renderEditCard(r) {
+  const prio = r.priority || 'normal';
+  const from = r.from && PEOPLE[r.from] ? r.from : 'carlos';
+  const to = r.to && PEOPLE[r.to] ? r.to : 'miguel';
+  const dueDate = r.dueDate || '';
+  const dateLabel = dueDate
+    ? new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'short' }).format(parseISODate(dueDate))
+    : 'sin fecha';
+
+  return `
+    <div class="reminder editing" data-id="${esc(r.id)}">
+      <input type="text" class="edit-input" value="${esc(r.text)}" maxlength="280" aria-label="Texto del recordatorio" />
+      <div class="opts-box">
+        <div class="chip chip-date ${dueDate ? 'active' : ''}" data-role="date-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="chip-text" data-role="date-text">${esc(dateLabel)}</span>
+          <button type="button" class="chip-x" data-role="date-clear" aria-label="Quitar fecha" ${dueDate ? '' : 'hidden'}>×</button>
+          <input type="date" data-role="date-input" value="${esc(dueDate)}" aria-label="Fecha" />
+        </div>
+        <label class="chip chip-select">
+          <span class="prio-dot" data-level="${esc(prio)}" data-role="prio-dot"></span>
+          <select data-role="prio-select" aria-label="Prioridad">
+            <option value="baja" ${prio==='baja'?'selected':''}>baja</option>
+            <option value="normal" ${prio==='normal'?'selected':''}>normal</option>
+            <option value="alta" ${prio==='alta'?'selected':''}>alta</option>
+          </select>
+        </label>
+        <label class="chip chip-select">
+          <span class="chip-pre">de</span>
+          <select data-role="from-select" aria-label="De quién">
+            <option value="carlos" ${from==='carlos'?'selected':''}>Carlos</option>
+            <option value="miguel" ${from==='miguel'?'selected':''}>Miguel</option>
+          </select>
+        </label>
+        <label class="chip chip-select">
+          <span class="chip-pre">para</span>
+          <select data-role="to-select" aria-label="Para quién">
+            <option value="carlos" ${to==='carlos'?'selected':''}>Carlos</option>
+            <option value="miguel" ${to==='miguel'?'selected':''}>Miguel</option>
+          </select>
+        </label>
+      </div>
+      <div class="edit-actions">
+        <button type="button" class="btn-ghost" data-role="cancel">Cancelar</button>
+        <button type="button" class="btn-primary" data-role="save">Guardar</button>
+      </div>
+    </div>
+  `;
+}
+
+function wireEditCard(card) {
+  const dateChipEl = card.querySelector('[data-role="date-chip"]');
+  const dateInputEl = card.querySelector('[data-role="date-input"]');
+  const dateTextEl = card.querySelector('[data-role="date-text"]');
+  const dateClearEl = card.querySelector('[data-role="date-clear"]');
+  const prioSelectEl = card.querySelector('[data-role="prio-select"]');
+  const prioDotEl = card.querySelector('[data-role="prio-dot"]');
+  const fromSelectEl = card.querySelector('[data-role="from-select"]');
+  const toSelectEl = card.querySelector('[data-role="to-select"]');
+  const textEl = card.querySelector('.edit-input');
+  const cancelBtn = card.querySelector('[data-role="cancel"]');
+  const saveBtn = card.querySelector('[data-role="save"]');
+
+  function updateDateChipEl() {
+    if (dateInputEl.value) {
+      try {
+        const d = parseISODate(dateInputEl.value);
+        dateTextEl.textContent = new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'short' }).format(d);
+      } catch { dateTextEl.textContent = dateInputEl.value; }
+      dateChipEl.classList.add('active');
+      dateClearEl.hidden = false;
+    } else {
+      dateTextEl.textContent = 'sin fecha';
+      dateChipEl.classList.remove('active');
+      dateClearEl.hidden = true;
+    }
+  }
+  dateInputEl.addEventListener('change', updateDateChipEl);
+  dateClearEl.addEventListener('click', e => {
+    e.stopPropagation();
+    dateInputEl.value = '';
+    updateDateChipEl();
+  });
+  prioSelectEl.addEventListener('change', () => {
+    prioDotEl.setAttribute('data-level', prioSelectEl.value);
+  });
+
+  cancelBtn.addEventListener('click', () => { editingId = null; render(); });
+
+  saveBtn.addEventListener('click', async () => {
+    const newText = textEl.value.trim();
+    if (!newText) { textEl.focus(); return; }
+    saveBtn.disabled = true;
+    try {
+      await updateDoc(doc(db, 'reminders', card.dataset.id), {
+        text: newText,
+        dueDate: dateInputEl.value || null,
+        priority: prioSelectEl.value || 'normal',
+        from: fromSelectEl.value || 'carlos',
+        to: toSelectEl.value || 'miguel',
+        updatedAt: Date.now()
+      });
+      editingId = null;
+      render();
+    } catch (e) {
+      console.error('save failed', e);
+      saveBtn.disabled = false;
+    }
+  });
+
+  textEl.focus();
+  textEl.setSelectionRange(textEl.value.length, textEl.value.length);
+}
+
+function startEdit(id) {
+  editingId = id;
+  render();
 }
 
 function showError(title, details) {
@@ -794,6 +1009,8 @@ function showError(title, details) {
 async function addReminder(text) {
   const dueDate = dateInput.value || null;
   const priority = prioSelect.value || 'normal';
+  const from = fromSelect.value || 'carlos';
+  const to = toSelect.value || 'miguel';
   try {
     await addDoc(collection(db, 'reminders'), {
       text,
@@ -801,14 +1018,15 @@ async function addReminder(text) {
       completed: false,
       completedAt: null,
       createdBy: auth.currentUser ? auth.currentUser.uid : null,
-      dueDate,
-      priority
+      dueDate, priority, from, to
     });
-    // Reset form options after a successful add
+    // Reset date & priority; remember who the user was last writing as
     dateInput.value = '';
     updateDateChip();
     prioSelect.value = 'normal';
     prioDot.setAttribute('data-level', 'normal');
+    lsSet(LS_FROM, from);
+    lsSet(LS_TO, to);
   } catch (e) {
     console.error('add failed', e);
     input.value = text;
@@ -821,17 +1039,13 @@ async function toggleDone(id, done) {
       completed: done,
       completedAt: done ? Date.now() : null
     });
-  } catch (e) {
-    console.error('toggle failed', e);
-  }
+  } catch (e) { console.error('toggle failed', e); }
 }
 
 async function deleteReminder(id) {
-  try {
-    await deleteDoc(doc(db, 'reminders', id));
-  } catch (e) {
-    console.error('delete failed', e);
-  }
+  if (id === editingId) editingId = null;
+  try { await deleteDoc(doc(db, 'reminders', id)); }
+  catch (e) { console.error('delete failed', e); }
 }
 
 /* ---------- Form submit ---------- */
@@ -850,9 +1064,7 @@ form.addEventListener('submit', e => {
 window.addEventListener('online', () => {
   if (auth.currentUser) setStatus('online', 'en línea');
 });
-window.addEventListener('offline', () => {
-  setStatus('offline', 'sin conexión');
-});
+window.addEventListener('offline', () => { setStatus('offline', 'sin conexión'); });
 
 /* ---------- Auth & subscription ---------- */
 
@@ -862,15 +1074,11 @@ try {
   console.error('auth failed', e);
   setStatus('offline', 'sin acceso');
   if (e.code === 'auth/admin-restricted-operation' || e.code === 'auth/operation-not-allowed') {
-    showError(
-      'Falta habilitar el inicio de sesión anónimo.',
-      'En Firebase Console → <strong>Authentication → Sign-in method → Anonymous</strong> → activa y guarda. Después recarga esta página.'
-    );
+    showError('Falta habilitar el inicio de sesión anónimo.',
+      'En Firebase Console → <strong>Authentication → Sign-in method → Anonymous</strong> → activa y guarda. Después recarga esta página.');
   } else if (e.code === 'auth/unauthorized-domain') {
-    showError(
-      'Este dominio no está autorizado en Firebase.',
-      'Ve a Firebase Console → <strong>Authentication → Settings → Authorized domains</strong> y agrega el dominio donde estás abriendo esta página.'
-    );
+    showError('Este dominio no está autorizado en Firebase.',
+      'Ve a Firebase Console → <strong>Authentication → Settings → Authorized domains</strong> y agrega el dominio donde estás abriendo esta página.');
   } else {
     showError('No pudimos conectar con Firebase.', `Código: <code>${esc(e.code || 'desconocido')}</code>`);
   }
@@ -880,7 +1088,6 @@ onAuthStateChanged(auth, user => {
   if (!user) return;
   setStatus('online', 'en línea');
   enableForm(true);
-
   const q = query(collection(db, 'reminders'));
   onSnapshot(q, snap => {
     reminders = snap.docs.map(d => ({
@@ -893,10 +1100,8 @@ onAuthStateChanged(auth, user => {
     console.error('snapshot failed', err);
     setStatus('offline', 'error');
     if (err.code === 'permission-denied') {
-      showError(
-        'Firestore está rechazando las lecturas.',
-        'Ve a Firebase Console → <strong>Firestore Database → Rules</strong> y pega las reglas que vienen en el <code>README.md</code>, luego publica.'
-      );
+      showError('Firestore está rechazando las lecturas.',
+        'Ve a Firebase Console → <strong>Firestore Database → Rules</strong> y pega las reglas que vienen en el <code>README.md</code>, luego publica.');
     } else {
       showError('Error de Firestore.', `Código: <code>${esc(err.code || 'desconocido')}</code>`);
     }
